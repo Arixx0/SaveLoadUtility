@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -17,6 +18,7 @@ public class Ui_Updater : MonoBehaviour
     private Slider autoSaveIntervalSlider;
     private float sliderValue;
     private TMP_Text sliderValueText;
+    private TMP_Text inputKeyText;
 
     int saveCount;
     public int SaveCount
@@ -61,6 +63,7 @@ public class Ui_Updater : MonoBehaviour
             saveInfoText[index] = UIcanvas.transform.Find("SaveVerticalLayOut").GetChild(index).GetComponent<TMP_Text>();
         }
 
+        inputKeyText = UIcanvas.transform.Find("CompleteText").GetComponent<TMP_Text>();
         // 2. Btn Init
         Btns = new Button[UIcanvas.transform.Find("Btns").childCount];
         for (int index = 0; index < Btns.Length; index++)
@@ -69,15 +72,20 @@ public class Ui_Updater : MonoBehaviour
             switch (index)
             {
                 case 0: // Save 버튼
-                    Btns[index].onClick.AddListener(() => { SaveLoadUility.inst.SaveData(saveCount.ToString()); });
+                    Btns[index].onClick.AddListener(() => 
+                    {
+                        SaveLoadUtility.inst.SaveData(saveCount.ToString()); 
+                    });
                     break;
 
                 case 1:  // Auto Save 버튼
+                    Set_CenterText("Auto Btn");
                     Btns[index].onClick.AddListener(() => { IsAutoSave = !IsAutoSave; });
                     break;
 
                 case 2: // Load 버튼
-                    Btns[index].onClick.AddListener(() => { SaveLoadUility.inst.LoadDate(); });
+                    Set_CenterText("Load Btn");
+                    Btns[index].onClick.AddListener(() => { SaveLoadUtility.inst.LoadDate(); });
                     break;
             }
         }
@@ -119,10 +127,10 @@ public class Ui_Updater : MonoBehaviour
         fpsUpdaterTimer += Time.deltaTime;
 
         //Container Counter
-        saveInfoText[0].text = $"Current Save Contatiner Counter : {SaveLoadUility.inst.saveDataPipeline.Count}";
+        saveInfoText[0].text = $"Current Save Contatiner Counter : {SaveLoadUtility.inst.saveDataPipeline.Count}";
 
         // Save Timer
-        saveInfoText[1].text = $"Save Timer : <b>{SaveLoadUility.inst.saveTimer.ToString("F1")} Sec";
+        saveInfoText[1].text = $"Save Timer : <b>{SaveLoadUtility.inst.saveTimer.ToString("F1")} Sec";
 
         // FPS Text
         if (fpsUpdaterTimer > FPSInterval)
@@ -133,4 +141,25 @@ public class Ui_Updater : MonoBehaviour
             saveInfoText[4].text = $"FPS : <color=yellow><b> {curFPS.ToString("F1")}";
         }
     }
+
+    public void Set_CenterText(string text)
+    {
+        if(inputKeyText.gameObject.activeSelf == true)
+        {
+            inputKeyText.gameObject.SetActive(false);
+        }
+
+        inputKeyText.text = text;
+
+        StartCoroutine(setTexxt());
+    }
+
+    IEnumerator setTexxt()
+    {
+        inputKeyText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.75f);
+        inputKeyText.gameObject.SetActive(false);
+    }
+
+
 }

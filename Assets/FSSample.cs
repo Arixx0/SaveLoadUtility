@@ -22,7 +22,7 @@ public class FsSaveData : MonoBehaviour
     private UnityEngine.UI.Text textComponent;
     private System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
 
-    private nn.account.Uid userId;
+    private nn.account.Uid userId; // 사용자 고유ID
     private const string mountName = "MySave";
     private const string fileName = "MySaveData";
     private static readonly string filePath = string.Format("{0}:/{1}", mountName, fileName);
