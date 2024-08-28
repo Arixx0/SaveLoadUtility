@@ -181,15 +181,16 @@ public class FsSaveData : MonoBehaviour
 
     private void Load()
     {
-        nn.fs.EntryType entryType = 0;
-        nn.Result result = nn.fs.FileSystem.GetEntryType(ref entryType, filePath);
-        if (nn.fs.FileSystem.ResultPathNotFound.Includes(result))
+        EntryType entryType = 0;
+        Result result = FileSystem.GetEntryType(ref entryType, filePath);
+        
+        if (FileSystem.ResultPathNotFound.Includes(result))
         {
             return;
         }
         result.abortUnlessSuccess();
 
-        result = nn.fs.File.Open(ref fileHandle, filePath, nn.fs.OpenFileMode.Read);
+        result = nn.fs.File.Open(ref fileHandle, filePath, OpenFileMode.Read);
         result.abortUnlessSuccess();
 
         long fileSize = 0;

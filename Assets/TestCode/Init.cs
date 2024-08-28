@@ -45,24 +45,25 @@ public class Init : MonoBehaviour
 #if UNITY_SWITCH
 
         nn.fs.EntryType entryType = 0;
-        print("[NX] Data LOAD [A]: ");
         nn.Result result = nn.fs.FileSystem.GetEntryType(ref entryType, filePath);
-        print("[NX] Data LOAD [A-RESULT]: " + result.ToString());
+        
         if (nn.fs.FileSystem.ResultPathNotFound.Includes(result))
         {
             print("PATH NOT FOUND:" + filePath);
             //SaveDataNintendoSwitch(filePath, gameData);
             return null;
         }
-        print("[NX] Data LOAD [FOUND.... PROCESSING.....]: ");
+        
         result.abortUnlessSuccess();
 
         result = nn.fs.File.Open(ref fileHandle, filePath, nn.fs.OpenFileMode.Read);
         result.abortUnlessSuccess();
+
         print("[NX] Data LOAD : ");
         long fileSize = 0;
         result = nn.fs.File.GetSize(ref fileSize, fileHandle);
         result.abortUnlessSuccess();
+
         print("[NX] Data LOAD [C]: ");
         byte[] data = new byte[fileSize]; // 스크립트 저장하려고 임의대로 넣어논거임 fileSize
         result = nn.fs.File.Read(fileHandle, 0, data, fileSize);
@@ -115,12 +116,11 @@ public class Init : MonoBehaviour
         /* Debug.Log("[NX] Data SAVE [DISABLED]");
          return;*/
 
-        Debug.Log("[NX] DEMOUNT...");
+        
         nn.fs.FileSystem.Unmount(MOUNT_NAME);
-        Debug.Log("[NX] Data CLOSED.... REMOUNTING...");
         nn.Result result = nn.fs.SaveData.Mount(MOUNT_NAME, _nintendoSwitchUserID);
 
-        Debug.Log("[NX] Data SAVE...");
+        
 
         byte[] dataByteArray = ObjectToByteArray(data);
 
@@ -142,14 +142,15 @@ public class Init : MonoBehaviour
         }
 
         result.abortUnlessSuccess();
-        Debug.Log("[NX] Data OPENNING FILE...");
+
+        
         result = nn.fs.File.Open(ref fileHandle, filePath, nn.fs.OpenFileMode.Write);
         result.abortUnlessSuccess();
-        Debug.Log("[NX] Data SAVING FILE...");
+        
         const int offset = 0;
         result = nn.fs.File.Write(fileHandle, offset, dataByteArray, dataByteArray.LongLength, nn.fs.WriteOption.Flush);
         result.abortUnlessSuccess();
-        Debug.Log("[NX] Data CLOSING FILE...");
+        
         nn.fs.File.Close(fileHandle);
         result = nn.fs.FileSystem.Commit(MOUNT_NAME);
         result.abortUnlessSuccess();
